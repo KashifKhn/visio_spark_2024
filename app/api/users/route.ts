@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { connectToDatabase } from "@/lib/mongodb";
+import startDb from "@/lib/db";
+import { User } from "@/models/user";
 
 export async function GET() {
   try {
-    const { db } = await connectToDatabase();
-    const users = await db.collection("users").find().toArray();
+    await startDb();
+    const users = await User.find({});
     return NextResponse.json(users);
   } catch (error) {
     console.error(error);
@@ -14,10 +15,11 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { db } = await connectToDatabase();
+    await startDb();
     const userData = await request.json();
-    const result = await db.collection("users").insertOne(userData);
-    return NextResponse.json({ _id: result.insertedId, ...userData });
+    const user = new User(userData);
+    await user.save();
+    return NextResponse.json(user);
   } catch (error) {
     console.error(error);
     return new NextResponse("Internal Server Error", { status: 500 });

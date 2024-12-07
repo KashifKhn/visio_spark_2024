@@ -1,21 +1,21 @@
 import { NextResponse } from "next/server";
-import { ObjectId } from "mongodb";
-import { connectToDatabase } from "@/lib/mongodb";
+import startDb from "@/lib/db";
+import { User } from "@/models/user";
 
 export async function PUT(
   request: Request,
   { params }: { params: { userId: string } },
 ) {
   try {
-    const { db } = await connectToDatabase();
+    await startDb();
     const userData = await request.json();
-    const result = await db
-      .collection("users")
-      .updateOne({ _id: new ObjectId(params.userId) }, { $set: userData });
-    if (result.matchedCount === 0) {
+    const user = await User.findByIdAndUpdate(params.userId, userData, {
+      new: true,
+    });
+    if (!user) {
       return new NextResponse("User not found", { status: 404 });
     }
-    return NextResponse.json({ _id: params.userId, ...userData });
+    return NextResponse.json(user);
   } catch (error) {
     console.error(error);
     return new NextResponse("Internal Server Error", { status: 500 });
@@ -23,15 +23,13 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _: Request,
+  request: Request,
   { params }: { params: { userId: string } },
 ) {
   try {
-    const { db } = await connectToDatabase();
-    const result = await db
-      .collection("users")
-      .deleteOne({ _id: new ObjectId(params.userId) });
-    if (result.deletedCount === 0) {
+    await startDb();
+    const user = await User.findByIdAndDelete(params.userId);
+    if (!user) {
       return new NextResponse("User not found", { status: 404 });
     }
     return new NextResponse(null, { status: 204 });

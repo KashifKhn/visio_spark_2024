@@ -106,9 +106,8 @@ export function UserDialog({
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="user">User</SelectItem>
-                  <SelectItem value="guest">Guest</SelectItem>
+                  <SelectItem value="ADMIN">Admin</SelectItem>
+                  <SelectItem value="CSR">CSR</SelectItem>
                 </SelectContent>
               </Select>
             </div>
