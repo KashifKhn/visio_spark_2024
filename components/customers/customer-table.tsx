@@ -29,7 +29,7 @@ const columns: ColumnDef<Customer>[] = [
         header: 'Name',
         cell: ({ row }) => (
             <Link
-                href={`/admin/customers/${row.original._id}`}
+                href={`/admin/customers/6753fc890a5f98ef50facb89`}
                 className="font-medium text-blue-600 hover:underline"
             >
                 {row.getValue('name')}

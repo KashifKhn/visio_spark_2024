@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import startDb from '@/lib/db';
 import CustomerModel from '@/models/customer';
-import SubscriptionPlanModel from '@/models/subscriptionPlan';
 import { Customer } from '@/types/customer';
 
 export default async function CustomersPage() {
@@ -30,11 +29,37 @@ export default async function CustomersPage() {
         }
     };
 
+    // Fallback array of customer objects
+    const fallbackCustomers: Customer[] = [
+        {
+            id: '6753fc890a5f98ef50facb89',
+            name: ' Customer 1',
+            email: 'fallback1@example.com',
+            phone: '123-456-7890',
+            address: '123 Main St, Fallback City',
+            subscriptionPlan: 'Basic Plan',
+            status: 'Active',
+            dateJoined: new Date().toISOString(),
+        },
+        {
+            id: '6753fc890a5f98ef50facb89',
+            name: 'Customer 2',
+            email: 'fallback2@example.com',
+            phone: '987-654-3210',
+            address: '456 Elm St, Fallback Town',
+            subscriptionPlan: 'Premium Plan',
+            status: 'Inactive',
+            dateJoined: new Date().toISOString(),
+        },
+    ];
+
+    // Attempt to fetch customers, falling back to the fallback array on error
     let customers: Customer[] = [];
     try {
         customers = await getCustomers();
     } catch (error) {
-        console.error('Error in CustomersPage:', error);
+        console.error('Error in CustomersPage, using fallback data:', error);
+        customers = fallbackCustomers; // Use fallback data
     }
 
     return (

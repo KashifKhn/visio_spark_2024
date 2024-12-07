@@ -8,7 +8,6 @@ import SubscriptionChangeRequestModel from '@/models/subscriptionChangeRequests'
 import { ServiceRequestList } from '@/components/customers/service-request-list';
 import { SubscriptionChangeList } from '@/components/customers/subscription-change-list';
 import { DeleteCustomerButton } from '@/components/customers/delete-customer-button';
-import { CustomerChatButton } from '@/components/customers/customer-chat-button';
 
 export default async function CustomerProfilePage({ params }: { params: { id: string } }) {
     // Database Logic
@@ -60,12 +59,11 @@ export default async function CustomerProfilePage({ params }: { params: { id: st
         <div className="container mx-auto py-10">
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-3xl font-bold">{customer.name}</h1>
-                <div className="space-x-2 flex items-center">
+                <div className="space-x-2">
                     <Link href={`/admin/customers/${params.id}/edit`}>
                         <Button variant="outline">Edit</Button>
                     </Link>
                     <DeleteCustomerButton customerId={params.id} />
-                    <CustomerChatButton customerId={params.id} customerName={customer.name} />
                 </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -93,7 +91,8 @@ export default async function CustomerProfilePage({ params }: { params: { id: st
                     <SubscriptionChangeList subscriptionChanges={subscriptionChanges} />
                 </Suspense>
             </div>
+
+
         </div>
     );
 }
-
