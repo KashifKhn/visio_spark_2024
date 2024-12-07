@@ -1,4 +1,4 @@
-import { Document, Model, ObjectId, Schema, model, models } from 'mongoose';
+import mongoose, { Document, Model, ObjectId, Schema } from 'mongoose';
 
 export interface ServiceRequest {
   customer: ObjectId;
@@ -19,8 +19,13 @@ const serviceRequestSchema = new Schema<ServiceRequestDocument>(
   { timestamps: true }
 );
 
+//
+
 const ServiceRequestModel: Model<ServiceRequestDocument> =
-  models.ServiceRequest ||
-  model<ServiceRequestDocument>('ServiceRequest', serviceRequestSchema);
+  mongoose.models.ServiceRequest ||
+  mongoose.model<ServiceRequestDocument>(
+    'ServiceRequest',
+    serviceRequestSchema
+  );
 
 export default ServiceRequestModel;

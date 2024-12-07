@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import * as React from "react"
+import React from 'react';
 import {
     ColumnDef,
     SortingState,
@@ -9,9 +9,9 @@ import {
     getPaginationRowModel,
     getSortedRowModel,
     useReactTable,
-} from "@tanstack/react-table"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+} from '@tanstack/react-table';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
     Table,
     TableBody,
@@ -19,52 +19,55 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
-import Link from "next/link"
-import { Customer } from "@/types/customer"
+} from '@/components/ui/table';
+import Link from 'next/link';
+import { Customer } from '@/types/customer';
 
 const columns: ColumnDef<Customer>[] = [
     {
-        accessorKey: "name",
-        header: "Name",
+        accessorKey: 'name',
+        header: 'Name',
         cell: ({ row }) => (
-            <Link href={`/admin/customers/${row.original.id}`} className="font-medium text-blue-600 hover:underline">
-                {row.getValue("name")}
+            <Link
+                href={`/admin/customers/${row.original._id}`}
+                className="font-medium text-blue-600 hover:underline"
+            >
+                {row.getValue('name')}
             </Link>
         ),
     },
     {
-        accessorKey: "email",
-        header: "Email",
+        accessorKey: 'email',
+        header: 'Email',
     },
     {
-        accessorKey: "phone",
-        header: "Phone",
+        accessorKey: 'phone',
+        header: 'Phone',
     },
     {
-        accessorKey: "subscriptionPlan",
-        header: "Subscription",
+        accessorKey: 'subscriptionPlan',
+        header: 'Subscription',
     },
     {
-        accessorKey: "status",
-        header: "Status",
+        accessorKey: 'status',
+        header: 'Status',
         cell: ({ row }) => (
             <span
-                className={`px-2 py-1 rounded ${row.original.status === "Active"
-                    ? "bg-green-100 text-green-800"
-                    : row.original.status === "Inactive"
-                        ? "bg-gray-100 text-gray-800"
-                        : "bg-red-100 text-red-800"
+                className={`px-2 py-1 rounded ${row.original.status === 'Active'
+                    ? 'bg-green-100 text-green-800'
+                    : row.original.status === 'Inactive'
+                        ? 'bg-gray-100 text-gray-800'
+                        : 'bg-red-100 text-red-800'
                     }`}
             >
                 {row.original.status}
             </span>
         ),
     },
-]
+];
 
 export function CustomersTable({ data }: { data: Customer[] }) {
-    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [sorting, setSorting] = React.useState<SortingState>([]);
 
     const table = useReactTable({
         data,
@@ -76,16 +79,16 @@ export function CustomersTable({ data }: { data: Customer[] }) {
         state: {
             sorting,
         },
-    })
+    });
 
     return (
         <div className="w-full">
             <div className="flex items-center py-4">
                 <Input
                     placeholder="Filter customers..."
-                    value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                    value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
                     onChange={(event) =>
-                        table.getColumn("name")?.setFilterValue(event.target.value)
+                        table.getColumn('name')?.setFilterValue(event.target.value)
                     }
                     className="max-w-sm"
                 />
@@ -109,22 +112,25 @@ export function CustomersTable({ data }: { data: Customer[] }) {
                         ))}
                     </TableHeader>
                     <TableBody>
-                        {table.getRowModel().rows?.length ? (
+                        {table.getRowModel().rows.length ? (
                             table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                >
+                                <TableRow key={row.id}>
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            {flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext()
+                                            )}
                                         </TableCell>
                                     ))}
                                 </TableRow>
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                <TableCell
+                                    colSpan={columns.length}
+                                    className="h-24 text-center"
+                                >
                                     No results.
                                 </TableCell>
                             </TableRow>
@@ -151,6 +157,5 @@ export function CustomersTable({ data }: { data: Customer[] }) {
                 </Button>
             </div>
         </div>
-    )
+    );
 }
-

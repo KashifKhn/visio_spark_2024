@@ -2,10 +2,40 @@ import { Suspense } from 'react';
 import { CustomersTable } from '@/components/customers/customer-table';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { getCustomers } from '@/lib/api';
+import startDb from '@/lib/db';
+import CustomerModel from '@/models/customer';
+import SubscriptionPlanModel from '@/models/subscriptionPlan';
+import { Customer } from '@/types/customer';
 
 export default async function CustomersPage() {
-    const customers = await getCustomers();
+    const getCustomers = async (): Promise<Customer[]> => {
+        try {
+            await startDb();
+
+            // Fetch customers and their subscription plans
+            const customers = await CustomerModel.find()
+                .lean() // Convert Mongoose documents to plain objects
+                .populate('subscriptionPlan', 'name')
+                .exec();
+
+            return customers.map(customer => ({
+                ...customer,
+                subscriptionPlan: customer.subscriptionPlan
+                    ? (customer.subscriptionPlan as any).name
+                    : 'No Plan',
+            }));
+        } catch (error) {
+            console.error('Error fetching customers:', error);
+            throw new Error('Failed to fetch customers');
+        }
+    };
+
+    let customers: Customer[] = [];
+    try {
+        customers = await getCustomers();
+    } catch (error) {
+        console.error('Error in CustomersPage:', error);
+    }
 
     return (
         <div className="container mx-auto py-10">
@@ -21,4 +51,3 @@ export default async function CustomersPage() {
         </div>
     );
 }
-

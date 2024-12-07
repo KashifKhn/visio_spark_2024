@@ -1,12 +1,52 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { getCustomerById, getServiceRequests, getSubscriptionChanges } from '@/lib/api';
+import startDb from '@/lib/db';
+import CustomerModel from '@/models/customer';
+import ServiceRequestModel from '@/models/serviceRequests';
+import SubscriptionChangeRequestModel from '@/models/subscriptionChangeRequests';
 import { ServiceRequestList } from '@/components/customers/service-request-list';
 import { SubscriptionChangeList } from '@/components/customers/subscription-change-list';
 import { DeleteCustomerButton } from '@/components/customers/delete-customer-button';
 
 export default async function CustomerProfilePage({ params }: { params: { id: string } }) {
+    // Database Logic
+    const getCustomerById = async (id: string) => {
+        try {
+            await startDb();
+            const customer = await CustomerModel.findById(id)
+                .populate('subscriptionPlan', 'name')
+                .lean(); // Convert Mongoose document to plain object
+            return customer;
+        } catch (error) {
+            console.error('Error fetching customer:', error);
+            throw new Error('Failed to fetch customer');
+        }
+    };
+
+    const getServiceRequests = async (customerId: string) => {
+        try {
+            await startDb();
+            const serviceRequests = await ServiceRequestModel.find({ customer: customerId }).lean();
+            return serviceRequests;
+        } catch (error) {
+            console.error('Error fetching service requests:', error);
+            return [];
+        }
+    };
+
+    const getSubscriptionChanges = async (customerId: string) => {
+        try {
+            await startDb();
+            const subscriptionChanges = await SubscriptionChangeRequestModel.find({ customer: customerId }).lean();
+            return subscriptionChanges;
+        } catch (error) {
+            console.error('Error fetching subscription changes:', error);
+            return [];
+        }
+    };
+
+    // Fetch Data
     const customer = await getCustomerById(params.id);
     const serviceRequests = await getServiceRequests(params.id);
     const subscriptionChanges = await getSubscriptionChanges(params.id);
@@ -33,7 +73,7 @@ export default async function CustomerProfilePage({ params }: { params: { id: st
                         <p><strong>Email:</strong> {customer.email}</p>
                         <p><strong>Phone:</strong> {customer.phone}</p>
                         <p><strong>Address:</strong> {customer.address}</p>
-                        <p><strong>Subscription Plan:</strong> {customer.subscriptionPlan}</p>
+                        <p><strong>Subscription Plan:</strong> {customer.subscriptionPlan?.name || 'No Plan'}</p>
                         <p><strong>Status:</strong> {customer.status}</p>
                         <p><strong>Date Joined:</strong> {new Date(customer.dateJoined).toLocaleDateString()}</p>
                     </div>
@@ -54,4 +94,3 @@ export default async function CustomerProfilePage({ params }: { params: { id: st
         </div>
     );
 }
-

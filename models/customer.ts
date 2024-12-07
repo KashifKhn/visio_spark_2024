@@ -1,4 +1,6 @@
-import { Document, Model, ObjectId, Schema, model, models } from 'mongoose';
+import mongoose, { Document, Model, ObjectId, Schema } from 'mongoose';
+import SubscriptionPlanModel from './subscriptionPlan';
+import ServiceRequestModel from './serviceRequest';
 
 export interface Customer {
   name: string;
@@ -32,6 +34,7 @@ const customerSchema = new Schema<CustomerDocument>(
 );
 
 const CustomerModel: Model<CustomerDocument> =
-  models.Customer || model<CustomerDocument>('Customer', customerSchema);
+  mongoose.models.Customer ||
+  mongoose.model<CustomerDocument>('Customer', customerSchema);
 
 export default CustomerModel;

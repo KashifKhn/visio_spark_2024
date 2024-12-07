@@ -1,7 +1,6 @@
-import { Document, Model, Schema, model, models } from 'mongoose';
+import mongoose, { Document, Model, Schema } from 'mongoose';
 
 export interface SubscriptionPlan {
-  sid: string;
   name: string;
   description: string;
   price: number;
@@ -21,7 +20,10 @@ const subscriptionPlanSchema = new Schema<SubscriptionPlanDocument>(
 );
 
 const SubscriptionPlanModel: Model<SubscriptionPlanDocument> =
-  models.SubscriptionPlan ||
-  model<SubscriptionPlanDocument>('SubscriptionPlan', subscriptionPlanSchema);
+  mongoose.models.SubscriptionPlan ||
+  mongoose.model<SubscriptionPlanDocument>(
+    'SubscriptionPlan',
+    subscriptionPlanSchema
+  );
 
 export default SubscriptionPlanModel;

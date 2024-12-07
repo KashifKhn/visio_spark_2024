@@ -71,22 +71,11 @@ const subscriptionChanges: SubscriptionChange[] = [
 ];
 
 // API functions
-export async function getCustomers() {
-  try {
-    const response = await fetch('/api/customers', {
-      method: 'GET',
-      cache: 'no-store', // Prevent caching for dynamic updates
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch customers');
-    }
-
-    return response.json();
-  } catch (error) {
-    console.error('Error fetching customers:', error);
-    throw error;
-  }
+export async function getCustomers(): Promise<Customer[]> {
+  // In a real application, this would be an API call
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(customers), 500);
+  });
 }
 
 export async function getCustomerById(
