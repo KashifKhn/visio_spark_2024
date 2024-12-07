@@ -1,5 +1,6 @@
 import Layout from "@/components/admin-layout";
 import type { Metadata } from "next";
+import { Toaster } from "react-hot-toast";
 
 
 export const metadata: Metadata = {
@@ -19,6 +20,7 @@ export default function RootLayout({
             >
                 <Layout>
                     {children}
+                    <Toaster />
                 </Layout>
             </body>
         </html>
